@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import Login from './pages/Login'
+import NoMatch from "./components/no-match/NoMatch";
+import s from './App.module.css'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const App = () => {
+
+    const [ isFetching, setIsFetching ] = useState(false)
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const isUserAuthorized = false
+    const isLoginPage = location.pathname === '/login'
+
+    useEffect(() => {
+        (async () => {
+            setIsFetching(true)
+            await new Promise((res) => setInterval(() => res(''), 1000))
+            setIsFetching(false)
+        })()
+    }, [])
+
+    if (isFetching) {
+        return <div>loading...</div>
+    }
+
+    if (!(isUserAuthorized || isLoginPage)) {
+        navigate('/login')
+    }
+
+    return (
+        <div className={s.container}>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="*" element={<NoMatch />} />
+            </Routes>
+        </div>
+    )
 }
 
-export default App;
+export default App
